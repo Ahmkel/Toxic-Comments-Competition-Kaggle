@@ -20,14 +20,13 @@ class DataGenerator:
         if all_classes:
             self.y = data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]]
         else:
-            y = data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]].sum(axis=1)
-            self.y = y.clip(0, 1)
-
+            self.y = data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]].sum(axis=1).clip(0 ,1)
+ 
         tokenizer = Tokenizer(num_words=vocab_size, lower=True, oov_token='UNK')
         tokenizer.fit_on_texts(list_sentences_train)
+        self.word_index = tokenizer.word_index
         
         sequences = tokenizer.texts_to_sequences(list_sentences_train)
-        self.word_index = tokenizer.word_index
         self.data = pad_sequences(sequences, maxlen=max_length, padding=padding)
 
         sequences = tokenizer.texts_to_sequences(list_sentences_test)
