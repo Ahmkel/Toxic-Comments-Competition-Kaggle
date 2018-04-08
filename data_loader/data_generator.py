@@ -7,7 +7,7 @@ class DataGenerator:
     def __init__(self, config):
         vocab_size = config.vocab_size
         all_classes = config.all_classes
-        max_length = config.max_length
+        max_sequence_length = config.max_sequence_length
         padding = config.padding
         train_file = '../data/train.csv'
         test_file = '../data/test.csv'
@@ -27,10 +27,10 @@ class DataGenerator:
         self.word_index = tokenizer.word_index
         
         sequences = tokenizer.texts_to_sequences(list_sentences_train)
-        self.data = pad_sequences(sequences, maxlen=max_length, padding=padding)
+        self.data = pad_sequences(sequences, maxlen=max_sequence_length, padding=padding)
 
         sequences = tokenizer.texts_to_sequences(list_sentences_test)
-        self.test = pad_sequences(sequences, maxlen=max_length, padding=padding)
+        self.test = pad_sequences(sequences, maxlen=max_sequence_length, padding=padding)
 
     def get_train_data(self):
         return self.data, self.y
