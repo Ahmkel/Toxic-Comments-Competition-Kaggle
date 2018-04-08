@@ -1,7 +1,7 @@
 from base.base_model import BaseModel
 from tensorflow.python.keras.models import Model
 from tensorflow.python.keras.layers import Input, Dense, Conv2D, MaxPool2D, Flatten, Concatenate, Reshape, Embedding
-
+from data_loader.data_generator import DataGenerator
 
 class SimpleConvModel(BaseModel):
     def __init__(self, config):
@@ -9,12 +9,30 @@ class SimpleConvModel(BaseModel):
         self.max_sequence_length = config.max_sequence_length
         self.embedding_dim = config.embedding_dim
         self.vocab_size = config.vocab_size
+        self.embedding_model_name = config.embedding_model_name
+        self.word_index = DataGenerator(config).get_word_index()
         self.build_model()
 
     def get_embedding_matrix(self):
-        # Todo: implement by gammal
-        raise NotImplementedError
+        embeddings_index = {}
         
+        f = open(os.path.join('', self.embedding_model_name))
+        for line in f:
+                values = line.split()
+                word = values[0]
+                coefs = np.asarray(values[1:], dtype='float32')
+                embeddings_index[word] = coefs
+        f.close()
+
+        embedding_matrix = np.zeros((len(self.word_index) + 1, self.embedding_dim))
+        for word, i in self.word_index.items():
+                embedding_vector = embeddings_index.get(word)
+                if embedding_vector is not None:
+                        # words not found in embedding index will be all-zeros.
+                        embedding_matrix[i] = embedding_vector
+        
+        return embedding_matrix
+
     def embedding_layer(self):
         embedding_matrix = self.get_embedding_matrix()
         
