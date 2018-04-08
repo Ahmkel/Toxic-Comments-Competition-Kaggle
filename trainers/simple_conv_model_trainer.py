@@ -1,13 +1,28 @@
 from base.base_train import BaseTrain
+from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tqdm import tqdm
 import numpy as np
 
 
-class ExampleTrainer(BaseTrain):
+class SimpleConvModelTrainer(BaseTrain):
     def __init__(self, sess, model, data, config, logger):
-        super(ExampleTrainer, self).__init__(sess, model, data, config,logger)
+        super(SimpleConvModelTrainer, self).__init__(sess, model, data, config, logger)
+        self.init_saver()
+
+    def init_saver(self):
+        self.callbacks.append(
+            ModelCheckpoint(
+                filepath='weights-improvement-{epoch:02d}-{loss:.2f}.hdf5',
+                monitor='loss',
+                mode='min',
+                save_best_only=True,
+                save_weights_only=True,
+                verbose=True,
+            )
+        )
 
     def train_epoch(self):
+        #Todo: ka7la
         loop = tqdm(range(self.config.num_iter_per_epoch))
         losses = []
         accs = []
@@ -27,6 +42,7 @@ class ExampleTrainer(BaseTrain):
         self.model.save(self.sess)
 
     def train_step(self):
+        #Todo: ka7la
         batch_x, batch_y = next(self.data.next_batch(self.config.batch_size))
         feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: True}
         _, loss, acc = self.sess.run([self.model.train_step, self.model.cross_entropy, self.model.accuracy],
