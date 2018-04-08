@@ -1,5 +1,5 @@
 {
-  "exp_name": "example",
+  "exp_name": "simple_conv_model",
   "num_epochs": 10,
   "num_iter_per_epoch": 10,
   "learning_rate": 0.001,

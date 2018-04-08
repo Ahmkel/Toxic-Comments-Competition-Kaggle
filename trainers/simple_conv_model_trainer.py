@@ -1,12 +1,13 @@
 from base.base_train import BaseTrain
+from tensorflow.python.keras.callbacks import ModelCheckpoint
 from tqdm import tqdm
 import numpy as np
 
 
-class ExampleTrainer(BaseTrain):
+class SimpleConvModelTrainer(BaseTrain):
     def __init__(self, sess, model, data, config, logger):
-        super(ExampleTrainer, self).__init__(sess, model, data, config,logger)
-        init_saver()
+        super(SimpleConvModelTrainer, self).__init__(sess, model, data, config, logger)
+        self.init_saver()
 
     def init_saver(self):
         self.callbacks.append(

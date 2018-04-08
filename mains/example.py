@@ -1,8 +1,8 @@
 import tensorflow as tf
 
 from data_loader.data_generator import DataGenerator
-from models.example_model import ExampleModel
-from trainers.example_trainer import ExampleTrainer
+from models.simple_conv_model import SimpleConvModel
+from trainers.simple_conv_model_trainer import SimpleConvModelTrainer
 from utils.config import process_config
 from utils.dirs import create_dirs
 from utils.logger import Logger
@@ -25,7 +25,7 @@ def main():
     # create tensorflow session
     sess = tf.Session()
     # create an instance of the model you want
-    model = ExampleModel(config)
+    model = SimpleConvModel(config)
     #load model if exists
     model.load(sess)
     # create your data generator
@@ -33,7 +33,7 @@ def main():
     # create tensorboard logger
     logger = Logger(sess, config)
     # create trainer and pass all the previous components to it
-    trainer = ExampleTrainer(sess, model, data, config, logger)
+    trainer = SimpleConvModelTrainer(sess, model, data, config, logger)
 
     # here you train your model
     trainer.train()

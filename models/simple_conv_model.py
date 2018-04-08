@@ -1,12 +1,11 @@
 from base.base_model import BaseModel
-from tensorflow.python.keras.models import Model, Sequential
-from tensorflow.python.keras.layers import Input, Dense, Conv2D, MaxPool2D, Flatten, Concatenate, Reshape
-from tensorflow.python.keras.callbacks import ModelCheckpoint
+from tensorflow.python.keras.models import Model
+from tensorflow.python.keras.layers import Input, Dense, Conv2D, MaxPool2D, Flatten, Concatenate, Reshape, Embedding
 
 
-class ExampleModel(BaseModel):
+class SimpleConvModel(BaseModel):
     def __init__(self, config):
-        super(ExampleModel, self).__init__(config)
+        super(SimpleConvModel, self).__init__(config)
         self.max_sequence_length = config.max_sequence_length
         self.embedding_dim = config.embedding_dim
         self.vocab_size = config.vocab_size
@@ -14,10 +13,10 @@ class ExampleModel(BaseModel):
 
     def get_embedding_matrix(self):
         # Todo: implement by gammal
-        return None
+        raise NotImplementedError
         
     def embedding_layer(self):
-        embedding_matrix = get_embedding_matrix()
+        embedding_matrix = self.get_embedding_matrix()
         
         return Embedding(
             input_dim=self.vocab_size + 1,
@@ -34,13 +33,13 @@ class ExampleModel(BaseModel):
         return channel_final
         
     def build_model(self):
-        self.inputs = Input(shape=(max_sequence_length,))
-        self.embedding = embedding_layer()(self.inputs)
-        self.channel_inputs = Reshape(target_shape=(self.max_sequence_length, self.embeddings_dim, 1))(self.embedding)
+        self.inputs = Input(shape=(self.max_sequence_length,))
+        self.embedding = self.embedding_layer()(self.inputs)
+        self.channel_inputs = Reshape(target_shape=(self.max_sequence_length, self.embedding_dim, 1))(self.embedding)
         
-        self.channel1_final = n_grams_channel(self.inputs, 2)
-        self.channel2_final = n_grams_channel(self.inputs, 3)
-        self.channel3_final = n_grams_channel(self.inputs, 4)
+        self.channel1_final = self.n_grams_channel(self.inputs, 2)
+        self.channel2_final = self.n_grams_channel(self.inputs, 3)
+        self.channel3_final = self.n_grams_channel(self.inputs, 4)
         self.channels_final = Concatenate()([self.channel1_final, self.channel2_final, self.channel3_final])
         self.predictions = Dense(1, 'sigmoid')(self.channels_final)
         
