@@ -18,9 +18,9 @@ class DataGenerator:
         list_sentences_test = test_df["comment_text"].fillna("NA").values
 
         if all_classes:
-            self.y = data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]]
+            self.y = np.array(data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]])
         else:
-            self.y = data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]].sum(axis=1).clip(0 ,1)
+            self.y = np.array(data_df[["toxic", "severe_toxic", "obscene", "threat", "insult", "identity_hate"]].sum(axis=1).clip(0 ,1))
  
         tokenizer = Tokenizer(num_words=vocab_size, lower=True, oov_token='UNK')
         tokenizer.fit_on_texts(list_sentences_train)
