@@ -9,5 +9,8 @@
   "vocab_size": 20000,
   "all_classes": false,
   "max_length": 50,
-  "padding": "post"
+  "padding": "post",
+  "max_sequence_length": 50,
+  "embedding_model_name": "glove.6B.100d.txt",
+  "embedding_dim": 300,
 }
