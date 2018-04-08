@@ -1,5 +1,7 @@
 from base.base_model import BaseModel
-import tensorflow as tf
+from tensorflow.python.keras.models import Model, Sequential
+from tensorflow.python.keras.layers import Input, Dense, Conv2D, MaxPool2D, Flatten, Concatenate
+from tensorflow.python.keras.callbacks import ModelCheckpoint
 
 
 class ExampleModel(BaseModel):
@@ -7,26 +9,36 @@ class ExampleModel(BaseModel):
         super(ExampleModel, self).__init__(config)
         self.build_model()
         self.init_saver()
+        this.callbacks = []
 
+    def n_grams_channel(inputs, n):
+        channel = Conv2D(1, kernel_size=(n, embeddings_length), activation='relu')(inputs)
+        channel_mp = MaxPool2D(pool_size=(channel.shape[1], 1))(channel)
+        channel_final = Flatten()(channel_mp)        
+        return channel_final
+        
     def build_model(self):
-        self.is_training = tf.placeholder(tf.bool)
-
-        self.x = tf.placeholder(tf.float32, shape=[None] + self.config.state_size)
-        self.y = tf.placeholder(tf.float32, shape=[None, 10])
-
-        # network architecture
-        d1 = tf.layers.dense(self.x, 512, activation=tf.nn.relu, name="dense1")
-        d2 = tf.layers.dense(d1, 10, name="dense2")
-
-        with tf.name_scope("loss"):
-            self.cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=self.y, logits=d2))
-            self.train_step = tf.train.AdamOptimizer(self.config.learning_rate).minimize(self.cross_entropy,
-                                                                                         global_step=self.global_step_tensor)
-            correct_prediction = tf.equal(tf.argmax(d2, 1), tf.argmax(self.y, 1))
-            self.accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
+        self.inputs = Input(shape=(max_sequence_length, embeddings_length, 1))
+        self.channel1_final = n_grams_channel(inputs, 2)
+        self.channel2_final = n_grams_channel(inputs, 3)
+        self.channel3_final = n_grams_channel(inputs, 4)
+        self.channels_final = Concatenate()([channel1_final, channel2_final, channel3_final])
+        self.predictions = Dense(1, 'sigmoid')(channel1_final)
+        
+        self.model = Model(inputs=inputs, outputs=predictions)
+        
+        self.model.compile(
+            loss='binary_crossentropy',
+            optimizer='adam',
+        )
 
     def init_saver(self):
-        # here you initialize the tensorflow saver that will be used in saving the checkpoints.
-        self.saver = tf.train.Saver(max_to_keep=self.config.max_to_keep)
-
+        this.callbacks.push(
+            ModelCheckpoint(
+            filepath='weights-improvement-{epoch:02d}-{loss:.2f}.hdf5',
+            monitor='loss',
+            mode='min',
+            save_best_only=True,
+            save_weights_only=True,
+            verbose=True,
+        )
