@@ -7,18 +7,16 @@ from tensorflow.python.keras.callbacks import ModelCheckpoint
 class ExampleModel(BaseModel):
     def __init__(self, config):
         super(ExampleModel, self).__init__(config)
-        self.build_model()
-        self.init_saver()
         self.max_sequence_length = config.max_sequence_length
         self.embedding_dim = config.embedding_dim
         self.vocab_size = config.vocab_size
-        self.callbacks = []
+        self.build_model()
 
-    def get_embedding_matrix():
+    def get_embedding_matrix(self):
         # Todo: implement by gammal
         return None
         
-    def embedding_layer():
+    def embedding_layer(self):
         embedding_matrix = get_embedding_matrix()
         
         return Embedding(
@@ -29,7 +27,7 @@ class ExampleModel(BaseModel):
             trainable=False
             )
         
-    def n_grams_channel(inputs, n):
+    def n_grams_channel(self, inputs, n):
         channel = Conv2D(1, kernel_size=(n, self.embedding_dim), activation='relu')(inputs)
         channel_mp = MaxPool2D(pool_size=(channel.shape[1], 1))(channel)
         channel_final = Flatten()(channel_mp)        
@@ -51,15 +49,4 @@ class ExampleModel(BaseModel):
         self.model.compile(
             loss='binary_crossentropy',
             optimizer='adam',
-        )
-
-    def init_saver(self):
-        self.callbacks.append(
-            ModelCheckpoint(
-            filepath='weights-improvement-{epoch:02d}-{loss:.2f}.hdf5',
-            monitor='loss',
-            mode='min',
-            save_best_only=True,
-            save_weights_only=True,
-            verbose=True,
         )
