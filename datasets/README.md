@@ -1,0 +1,1 @@
+This directory should contain the datasets and the glove models.
