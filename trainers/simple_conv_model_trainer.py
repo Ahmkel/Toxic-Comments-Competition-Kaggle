@@ -28,7 +28,7 @@ class SimpleConvModelTrainer(BaseTrain):
     
     def train(self):
         history = model.fit(
-            data.[0], data.[1],
+            data[0], data[1],
             epochs = self.config.num_epochs,
             verbose = True,
             batch_size = self.config.batch_size,
