@@ -1,24 +1,24 @@
 from base.base_train import BaseTrain
+import os
+import matplotlib.pyplot as plt
 from tensorflow.python.keras.callbacks import ModelCheckpoint
-from tqdm import tqdm
-import numpy as np
 
 
 class SimpleConvModelTrainer(BaseTrain):
-    def __init__(self, sess, model, data, config, logger):
+    def __init__(self, model, data, config):
+        super(SimpleConvModelTrainer, self).__init__(model, data, config)
         self.callbacks = []
         self.loss = []
-        self.val_loss = []
         self.acc = []
+        self.val_loss = []
         self.val_acc = []
-        super(SimpleConvModelTrainer, self).__init__(sess, model, data, config, logger)
         self.init_saver()
 
     def init_saver(self):
         self.callbacks.append(
             ModelCheckpoint(
-                filepath='weights-improvement-{epoch:02d}-{loss:.2f}.hdf5',
-                monitor='loss',
+                filepath=os.path.join(self.config.checkpoint_dir, '%s-{epoch:02d}-{val_loss:.2f}.hdf5' % self.config.exp_name),
+                monitor='val_loss',
                 mode='min',
                 save_best_only=True,
                 save_weights_only=True,
@@ -27,43 +27,20 @@ class SimpleConvModelTrainer(BaseTrain):
         )
     
     def train(self):
-        history = model.fit(
-            data[0], data[1],
-            epochs = self.config.num_epochs,
-            verbose = True,
-            batch_size = self.config.batch_size,
-            validation_split = self.config.validation_split
-            callbacks = self.callbacks
+        history = self.model.fit(
+            self.data[0], self.data[1],
+            epochs=self.config.num_epochs,
+            verbose=True,
+            batch_size=self.config.batch_size,
+            validation_split=self.config.validation_split,
+            callbacks=self.callbacks,
         )
-        self.loss = history.history['loss']
-        self.accuracy = history.history['acc']
-        self.val_loss = history.history['val_loss']
-        self.val_acc = history.history['val_acc']
+        self.loss.extend(history.history['loss'])
+        self.acc.extend(history.history['acc'])
+        self.val_loss.extend(history.history['val_loss'])
+        self.val_acc.extend(history.history['val_acc'])
 
-    def train_epoch(self):
-        #Todo: ka7la
-        loop = tqdm(range(self.config.num_iter_per_epoch))
-        losses = []
-        accs = []
-        for _ in loop:
-            loss, acc = self.train_step()
-            losses.append(loss)
-            accs.append(acc)
-        loss = np.mean(losses)
-        acc = np.mean(accs)
-
-        cur_it = self.model.global_step_tensor.eval(self.sess)
-        summaries_dict = {
-            'loss': loss,
-            'acc': acc,
-        }
-        self.logger.summarize(cur_it, summaries_dict=summaries_dict)
-        self.model.save(self.sess)
-
-    def train_step(self):
-        #Todo: ka7la
-        batch_x, batch_y = next(self.data.next_batch(self.config.batch_size))
-        feed_dict = {self.model.x: batch_x, self.model.y: batch_y, self.model.is_training: True}
-        _, loss, acc = self.sess.run([self.model.train_step, self.model.cross_entropy, self.model.accuracy],
-                                     feed_dict=feed_dict)
-        return loss, acc
+    def visualize(self):
+        plt.plot(self.loss, 'b')
+        plt.plot(self.val_loss, 'r')
+        plt.show()
