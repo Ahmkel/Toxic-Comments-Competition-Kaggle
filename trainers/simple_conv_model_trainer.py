@@ -6,6 +6,11 @@ import numpy as np
 
 class SimpleConvModelTrainer(BaseTrain):
     def __init__(self, sess, model, data, config, logger):
+        self.callbacks = []
+        self.loss = []
+        self.val_loss = []
+        self.acc = []
+        self.val_acc = []
         super(SimpleConvModelTrainer, self).__init__(sess, model, data, config, logger)
         self.init_saver()
 
@@ -20,6 +25,20 @@ class SimpleConvModelTrainer(BaseTrain):
                 verbose=True,
             )
         )
+    
+    def train(self):
+        history = model.fit(
+            data.[0], data.[1],
+            epochs = self.config.num_epochs,
+            verbose = True,
+            batch_size = self.config.batch_size,
+            validation_split = self.config.validation_split
+            callbacks = self.callbacks
+        )
+        self.loss = history.history['loss']
+        self.accuracy = history.history['acc']
+        self.val_loss = history.history['val_loss']
+        self.val_acc = history.history['val_acc']
 
     def train_epoch(self):
         #Todo: ka7la

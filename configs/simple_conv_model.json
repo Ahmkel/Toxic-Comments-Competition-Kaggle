@@ -13,4 +13,5 @@
   "max_sequence_length": 50,
   "embedding_model_name": "glove.6B.100d.txt",
   "embedding_dim": 300,
+  "validation_fraction":0.25,
 }
