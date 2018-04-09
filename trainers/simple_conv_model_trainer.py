@@ -1,7 +1,7 @@
 from base.base_train import BaseTrain
 import os
 import matplotlib.pyplot as plt
-from tensorflow.python.keras.callbacks import ModelCheckpoint
+from tensorflow.python.keras.callbacks import ModelCheckpoint, TensorBoard
 
 
 class SimpleConvModelTrainer(BaseTrain):
@@ -23,6 +23,13 @@ class SimpleConvModelTrainer(BaseTrain):
                 save_best_only=True,
                 save_weights_only=True,
                 verbose=True,
+            )
+        )
+
+        self.callbacks.append(
+            TensorBoard(
+                log_dir=self.config.summary_dir,
+                write_graph=True,
             )
         )
     
