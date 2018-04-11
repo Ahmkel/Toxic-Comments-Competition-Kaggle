@@ -2,6 +2,7 @@
 
 # Instructions
 run a binary classification experiment using: python main.py -c configs/simple_conv_model.json
+<br>
 run a multi-label classification experiment using: python main_multi_label.py -c configs/multi_label_conv_model.json
 
 # Credits
