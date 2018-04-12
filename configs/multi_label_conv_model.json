@@ -1,0 +1,13 @@
+{
+    "exp_name": "multi_label_conv_model",
+    "num_epochs": 100,
+    "learning_rate": 0.001,
+    "optimizer": "adam",
+    "batch_size": 64,
+    "all_classes": true,
+    "padding": "post",
+    "max_sequence_length": 150,
+    "embedding_model_name": "glove.6B.300d.txt",
+    "embedding_dim": 300,
+    "validation_split":0.25
+  }
