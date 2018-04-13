@@ -112,3 +112,6 @@ ENV/
 #datasets
 *.csv
 *.txt
+
+#experiments
+experiments/
