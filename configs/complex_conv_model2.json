@@ -9,5 +9,5 @@
     "max_sequence_length": 500,
     "embedding_model_name": "glove.6B.300d.txt",
     "embedding_dim": 300,
-    "validation_split":0.05,
-  }
+    "validation_split": 0.05,
+}
