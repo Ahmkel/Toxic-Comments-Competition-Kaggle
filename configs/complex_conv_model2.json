@@ -1,0 +1,13 @@
+{
+    "exp_name": "complex_conv_model",
+    "num_epochs": 20,
+    "learning_rate": 0.0001,
+    "optimizer": "adam",
+    "batch_size": 256,
+    "all_classes": true,
+    "padding": "post",
+    "max_sequence_length": 500,
+    "embedding_model_name": "glove.6B.300d.txt",
+    "embedding_dim": 300,
+    "validation_split":0.05,
+  }
