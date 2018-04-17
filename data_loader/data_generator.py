@@ -14,6 +14,7 @@ class DataGenerator:
 
         data_df = pd.read_csv(train_file)
         test_df = pd.read_csv(test_file)
+        self.test_ids = data_df["id"]
         list_sentences_train = data_df["comment_text"].fillna("NA").values
         list_sentences_test = test_df["comment_text"].fillna("NA").values
 
@@ -29,8 +30,7 @@ class DataGenerator:
         tokenizer.fit_on_texts(list_sentences_train)
 
         self.word_index = tokenizer.word_index
-        if config.get('vocab_size') is None:
-            config.vocab_size = len(self.word_index)
+        config.vocab_size = len(self.word_index)
 
         sequences = tokenizer.texts_to_sequences(list_sentences_train)
         self.data = pad_sequences(sequences, maxlen=max_sequence_length, padding=padding)
