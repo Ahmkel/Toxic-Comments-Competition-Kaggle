@@ -21,7 +21,7 @@ class ComplexConvModel(BaseModel):
         with open(os.path.join('datasets', self.embedding_model_name), encoding='utf-8') as f:
             lines = f.readlines()
             for line in lines:
-                    values = line.split()
+                    values = line.split(' ')
                     word = values[0]
                     coefs = np.asarray(values[1:], dtype='float32')
                     embeddings_index[word] = coefs
