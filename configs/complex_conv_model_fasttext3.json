@@ -1,5 +1,5 @@
 {
-    "exp_name": "complex_conv_model_fasttext",
+    "exp_name": "complex_conv_model_fasttext3",
     "num_epochs": 200,
     "learning_rate": 0.0001,
     "optimizer": "adam",
