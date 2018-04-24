@@ -48,9 +48,9 @@ class ComplexConvModel(BaseModel):
         
     def n_grams_channel(self, inputs, n):
         channel = Conv2D(1, kernel_size=(n, self.embedding_dim), activation='elu')(inputs)
-        channel_mp = MaxPool2D(pool_size=(channel.shape[1], 1))(channel)
-        channel_flat = Flatten()(channel_mp)        
-        channel_final = Dropout(0.2)(channel_flat)
+        channel_dropout = Dropout(0.2)(channel)
+        channel_mp = MaxPool2D(pool_size=(channel.shape[1], 1))(channel_dropout)
+        channel_final = Flatten()(channel_mp)
         return channel_final
         
     def build_model(self):
