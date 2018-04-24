@@ -63,7 +63,7 @@ class ComplexConvModel(BaseModel):
         self.channel3_final = self.n_grams_channel(self.channel_inputs, 5)
         self.channels_final = Concatenate()([self.channel0_final, self.channel1_final, self.channel2_final, self.channel3_final])
         self.channels_drop = Dropout(0.1)(self.channels_final)
-        self.predictions = Dense(6, 'sigmoid')(self.channels_final)
+        self.predictions = Dense(6, 'sigmoid')(self.channels_drop)
         
         self.model = Model(inputs=self.inputs, outputs=self.predictions)
         
